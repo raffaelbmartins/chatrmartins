@@ -1,6 +1,19 @@
 @import '../sass/variables';
 
 :host {
+    
+    .container {
+
+        display: flex;
+        align-items: center;
+
+        #content {
+            width: 100%;
+            height: 85vh;
+            border: 1px solid map-get($colors, light);
+        }
+    }
+
 }
 
     
