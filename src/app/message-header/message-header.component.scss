@@ -1,0 +1,25 @@
+.card-header {
+
+    display: flex;
+    align-content: center;
+
+    .avatar {
+        
+        width: 55px;
+        height: 55px;
+        border-radius: 100%;
+        overflow: hidden;
+        margin-right: 1rem;
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+
+    .text {
+        .title,p {
+            margin: 0
+        }
+    }
+}
