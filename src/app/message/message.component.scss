@@ -9,6 +9,19 @@
         max-width: 40%;
         padding: 10px;
         margin-bottom: 10px;
+
+        p {
+            margin: 0;
+
+            &.text {
+                margin-bottom: .2rem
+            }
+        }
+
+        .time-send {
+            color: map-get($colors, dark);
+            font-size: .6rem;
+        }
     }
     
     li.message-in {
@@ -25,6 +38,10 @@
         border-radius: 8px 8px 0 8px;
         background-color: map-get($colors, primary);
         color: #ffffff;
+        .time-send {
+            color: #ffffff;
+        }
+        
     }
 }
 

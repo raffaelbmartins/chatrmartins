@@ -1,8 +1,8 @@
 <div class="card-footer">
     <div class="input-group mb-3">
-        <textarea  id="message-area" class="form-control"></textarea>
+        <textarea  [(ngModel)]="message" id="message-area" class="form-control"></textarea>
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button" id="button-send">Enviar</button>
+          <button class="btn btn-outline-secondary" type="button" id="button-send" (click)="sendMessage()">Enviar</button>
         </div>
       </div>
 </div>

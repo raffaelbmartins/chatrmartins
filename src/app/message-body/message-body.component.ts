@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MessageComponent } from '../message/message.component';
+import { MessageService } from '../message/message.service';
+import { Message } from '../model/message';
 
 @Component({
   selector: 'app-message-body',
@@ -8,26 +10,17 @@ import { MessageComponent } from '../message/message.component';
 })
 export class MessageBodyComponent implements OnInit {
 
-  messages: MessageComponent[] = [];
-
-  constructor() {
-
-    let message = new MessageComponent();
-    message.text = "Testando";
-
-    let message2 = new MessageComponent();
-    message2.text = "Testando 2";
-
-    let message3 = new MessageComponent();
-    message3.text = "Testando 3";
-
-    this.messages.push(message.setIn());
-    this.messages.push(message2.setOut());
-    this.messages.push(message3.setIn());
-
-  }
+  @Output() messages: Array<Message> = [];
+  
+  constructor(private messageService: MessageService) { }
 
   ngOnInit() {
+    this.messageService.readEvent.subscribe(messages => this.read(messages));
+    this.messages = this.messageService.getMessages();
+  }
+
+  read(messages : Array<Message>) {
+    this.messages = messages;
   }
 
 }

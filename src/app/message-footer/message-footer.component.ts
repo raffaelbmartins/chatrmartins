@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { MessageService } from '../message/message.service';
+
 
 @Component({
   selector: 'app-message-footer',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessageFooterComponent implements OnInit {
 
-  constructor() { }
+  message: string;
 
+  constructor(private messageService: MessageService) { }
+  
   ngOnInit() {
+  }
+
+  sendMessage() {
+    this.messageService.sendMessage(this.message);
+    this.message = null;
   }
 
 }

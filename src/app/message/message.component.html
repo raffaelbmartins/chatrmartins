@@ -1,1 +1,4 @@
-<li [ngClass]="type === 'in' ? 'message-in' : 'message-out'" class="message">{{ text }}</li>
+<li [ngClass]="type === 'in' ? 'message-in' : 'message-out'" class="message">
+  <p class="text">{{ text }}</p>
+  <p class="time-send">{{ timeSend | date: 'dd/MM/yyyy hh:mm:ss' }}</p>
+</li>

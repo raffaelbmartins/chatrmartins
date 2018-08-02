@@ -9,6 +9,7 @@ export class MessageComponent implements OnInit {
 
   @Input() text: string;
   @Input() type: string = 'out';
+  @Input() timeSend: Date = new Date('01/01/0000 00:00:00');
 
   constructor() { }
 
