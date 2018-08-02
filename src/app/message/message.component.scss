@@ -1,0 +1,30 @@
+@import '../../sass/variables';
+
+:host {
+    display: flex;
+
+    li.message {
+
+        min-width: 1px;
+        max-width: 40%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    li.message-in {
+    
+        align-self: flex-start;
+        margin-right: auto;
+        background-color: map-get($colors,secondary);
+        border-radius: 8px 8px 8px 0;
+    }
+    
+    li.message-out {
+        align-self: flex-end;
+        margin-left: auto;
+        border-radius: 8px 8px 0 8px;
+        background-color: map-get($colors, primary);
+        color: #ffffff;
+    }
+}
+
