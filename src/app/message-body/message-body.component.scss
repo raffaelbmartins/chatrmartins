@@ -1,7 +1,19 @@
+@import '../../sass/variables';
+
 :host, .card-body {
     flex-grow: 1
 }
 
 .card-body {
     
+    #list-messages {
+
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+    }
+
 }
