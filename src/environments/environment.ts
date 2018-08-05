@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  token: "T*=/:4Z7,e8hF3vgxqS$]rVrf4:]uL:aGt;*Dk!w'RJ>&NXAJ,^}F5RIfpbR[YF",
+  url: 'http://seuprofissional.local/chat/mensagens',
+  origin: 'http://localhost:4200'
 };
 
 /*

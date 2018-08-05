@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Contact } from 'src/app/model/contact';
+import { MessageService } from '../message/message.service';
 
 @Component({
   selector: 'app-contact',
@@ -8,12 +9,16 @@ import { Contact } from 'src/app/model/contact';
 })
 export class ContactComponent implements OnInit {
 
-  contact: Contact;
-  active: boolean = false;
-  
-  constructor() { }
+  @Input() contact : Contact;
+ 
+  constructor(private messageService: MessageService) { }
 
-  ngOnInit() {
+  ngOnInit() {    
+  }
+
+  openMessages() {
+    this.messageService.openMessages.emit(this.contact);
+    console.log(this.contact);
   }
 
 }

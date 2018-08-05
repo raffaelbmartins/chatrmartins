@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Contact } from '../model/contact';
 
 @Component({
   selector: 'app-message-header',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessageHeaderComponent implements OnInit {
 
-  constructor() { }
+  @Input() contact : Contact;
+
+  constructor() {}
 
   ngOnInit() {
   }

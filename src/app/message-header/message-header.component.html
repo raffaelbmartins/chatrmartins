@@ -1,9 +1,9 @@
-<div class="card-header">
+<div *ngIf="contact" class="card-header">
     <div class="avatar">
       <img src="assets/images/avatar_logo.png" alt="">
     </div>
     <div class="text">
-      <h4 class="title">Nome do contato</h4>
-      <p>Descrição do contato</p>
+      <h4 class="title">{{ (contact.user == contact.output) ? contact.input : contact.output }}</h4>
+      <p>{{ contact.description }}</p>
     </div>
 </div>

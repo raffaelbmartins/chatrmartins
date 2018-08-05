@@ -1,6 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { MessageComponent } from '../message/message.component';
-import { MessageService } from '../message/message.service';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Message } from '../model/message';
 
 @Component({
@@ -10,17 +8,29 @@ import { Message } from '../model/message';
 })
 export class MessageBodyComponent implements OnInit {
 
-  @Output() messages: Array<Message> = [];
+  messages: Array<Message> = [];
+  @Input() contact : {
+    id: number,
+    user: string,
+    input: string,
+    output: string,
+    description: string,
+    active: boolean,
+    avatar: string,
+    messages: Array<{
+      id: number,
+      content: string,
+      timesend: Date,
+      user_id: number,
+      user_username: string,
+      read: boolean
+    }>;
+  };
   
-  constructor(private messageService: MessageService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.messageService.readEvent.subscribe(messages => this.read(messages));
-    this.messages = this.messageService.getMessages();
-  }
-
-  read(messages : Array<Message>) {
-    this.messages = messages;
+    
   }
 
 }

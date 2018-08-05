@@ -1,5 +1,5 @@
-<div class="card h-100">
-    <app-message-header></app-message-header>
+<div class="card h-100" *ngIf="contact">
+    <app-message-header [contact]="contact"></app-message-header>
     <app-message-body></app-message-body>
     <app-message-footer></app-message-footer>
 </div>

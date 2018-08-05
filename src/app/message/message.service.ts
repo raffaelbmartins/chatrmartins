@@ -1,6 +1,19 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Message } from '../model/message';
-import { Observable, BehaviorSubject } from '../../../node_modules/rxjs';
+import { Http, Response, RequestOptions, RequestMethod, Headers } from '@angular/http';
+import { Observable } from "rxjs";
+import { map, catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { Contact } from '../model/contact';
+
+const options = new RequestOptions({
+  method: RequestMethod.Get,
+  url: environment.url,
+  headers: new Headers({
+    'Accept': 'application/json',
+    'X-sprofissional-Token' : environment.token
+  })
+});
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +21,14 @@ import { Observable, BehaviorSubject } from '../../../node_modules/rxjs';
 export class MessageService {
 
   messages: Array<Message> = [];
+  lastid: number;
+
   @Output() readEvent = new EventEmitter<Message[]>();
+  @Output() openMessages = new EventEmitter<Contact>();
 
-  constructor() { }
+  constructor(private _http: Http) { }
 
-  sendMessage(_message: string) {
+  sendMessage(_message) {
     let message = new Message(_message);
     this.processMessage(message);
   }
@@ -26,32 +42,38 @@ export class MessageService {
     this.readEvent.emit(this.messages);
   }
 
-  getMessages() {
-    this.messages = this.testMessages();
-    return this.messages;
+  getMessages() : Observable<Contact[]> {
+
+    return this._http.get(environment.url, options)
+      .pipe(
+        map((res : Response) => {
+          
+          let _contacts : Contact[] = [];
+          let json = res.json();
+
+          json.forEach(data => {
+            
+            let contact = new Contact();
+            contact.id = data.id;
+            contact.input = data.input;
+            contact.output = data.output;
+            contact.description = data.description;
+            contact.messages = data.messages;
+            contact.user = data.user;
+            contact.active = data.active;
+
+            _contacts.push(contact);
+
+          });
+
+          return _contacts;
+
+        })
+      );
   }
 
-  testMessages() {
-    
-    let message = new Message();
-    message.text = "Ola tudo bem";
-    message.type = 'in';
-
-    let message2 = new Message();
-    message2.text = "Tudo sim e você";
-    message2.type = 'out';
-
-    let message3 = new Message();
-    message3.text = "Estou ótimo graças a Deus";
-    message3.type = 'in';
-
-    let m = [];
-
-    m.push(message);
-    m.push(message2);
-    m.push(message3);
-
-    return m;
-
+  private handleError(error: Response) {
+    console.log(error.json());
+    return [];
   }
 }

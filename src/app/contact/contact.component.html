@@ -1,15 +1,15 @@
-<a href="#" class="list-group-item list-group-item-action active">
+<a href="#" class="list-group-item list-group-item-action" (click)="openMessages()">
   <div class="info">
     <div class="avatar">
-      <img src="" alt="">
+      <img [src]="avatar" alt="">
     </div>
     <div class="text">
-      <h3>Nome do contato</h3>
-      <p>Última mensagem</p>
+      <h3>{{ (contact.user == contact.output) ? contact.input : contact.output }}</h3>
+      <p>{{ contact.description }}</p>
     </div>
     <div class="time">
-      <p>15:33</p>
-      <span class="badge badge-primary badge-pill">14</span>
+      <p>{{ time }}</p>
+      <span class="badge badge-primary badge-pill">{{ unread }}</span>
     </div>
   </div>
 </a>
