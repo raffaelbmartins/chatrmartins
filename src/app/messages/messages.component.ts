@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../message/message.service';
 import { Contact } from '../model/contact';
-import { Message } from '../../../node_modules/@angular/compiler/src/i18n/i18n_ast';
-import { Subscription } from '../../../node_modules/rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-messages',
@@ -15,13 +14,16 @@ export class MessagesComponent implements OnInit {
   contact: Contact;
   private _subscription : Subscription;
   private _check;
-
+  scrollChange : Subject<any> = new Subject();
+  
   constructor(private messageService: MessageService) { }
 
   ngOnInit() {
     this._subscription = this.messageService.openMessages.subscribe((response : Contact) => {
       this.contact = response;
-      this.check();
+      console.log(response);
+      this.scrollChange.next();
+      this.check();  
     });
   }
 
@@ -35,9 +37,12 @@ export class MessagesComponent implements OnInit {
 
   check() {
     this._check = setInterval(() => {
-      this.contact = this.messageService.getMessage(this.contact.id);
-      console.log("Check Messages");
-    }, 5000);
+      let messages : Array<any> = this.messageService.getMessage(this.contact);
+      if (messages.length > 0) {
+        this.contact.messages = this.contact.messages.concat(messages);
+        this.scrollChange.next(); 
+      }
+    }, 3000);
   }
 
 }

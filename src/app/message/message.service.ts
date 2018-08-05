@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Message } from '../model/message';
 import { Http, Response, RequestOptions, RequestMethod, Headers } from '@angular/http';
-import { Observable } from "rxjs";
+import { Observable, Subject, BehaviorSubject } from "rxjs";
 import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Contact } from '../model/contact';
@@ -25,7 +25,9 @@ export class MessageService {
   contacts: Contact[] = [];
 
   @Output() readEvent = new EventEmitter();
+  @Output() scrollChange = new EventEmitter();
   @Output() openMessages : EventEmitter<Contact> = new EventEmitter();
+  @Output() newMessage : EventEmitter<any> = new EventEmitter();
 
   constructor(private _http: Http) { }
 
@@ -44,8 +46,20 @@ export class MessageService {
     this.readEvent.emit();
   }
 
-  getMessage(id : number) : Contact {
-    return this.contacts.find(x => x.id == id);
+  getMessage(contact : Contact) : Array<any> {
+    
+    let _contact = this.contacts.find(x => x.id == contact.id);
+    let _newMessages = [];
+
+      _contact.messages.forEach((x : any) => {
+        let find = contact.messages.some((y: any) => y.id === x.id );
+        if (! find) {
+          _newMessages.push(x);
+        }
+      });
+
+    return _newMessages;
+
   }
 
   getMessages() : Observable<Contact[]> {

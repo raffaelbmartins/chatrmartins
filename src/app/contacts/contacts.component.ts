@@ -19,7 +19,7 @@ export class ContactsComponent implements OnInit {
   openBody(_contact : Contact) : void {
     this.messageService.readEvent.emit();
     this.messageService.openMessages.emit(_contact);
-    console.log('Open Body');
+    this.messageService.scrollChange.emit();
   }
 
 }
