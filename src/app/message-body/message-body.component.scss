@@ -1,11 +1,15 @@
 @import '../../sass/variables';
 
 :host, .card-body {
-    flex-grow: 1
+    // flex-grow: 1
+    height: 500px;
 }
 
 .card-body {
     
+    overflow: hidden;
+    overflow-y: auto;
+
     #list-messages {
 
         display: flex;

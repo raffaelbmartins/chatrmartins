@@ -12,13 +12,15 @@ import { Observable, Subscription } from '../../node_modules/rxjs';
 export class AppComponent {
   
   contacts : Contact[];
+
   private _subscription : Subscription;
+  private _check;
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit() {
-    this._subscription = this.messageService.readEvent.subscribe(() => this.read());
     this.read();
+    this.check(); 
   }
 
   read() {
@@ -28,7 +30,9 @@ export class AppComponent {
     });
   }
 
-  ngOndestroy() : void {
-    this._subscription.unsubscribe();
+  check() {
+    this._check = setInterval(() => {
+      this.read();      
+    }, 5000);
   }
 }

@@ -9,9 +9,9 @@ import { MessageService } from '../message/message.service';
 })
 export class ContactsComponent implements OnInit {
 
-  @Input() contacts: Contact[] = [];
+  @Input() contacts : Contact[];
 
-  constructor(private messageService : MessageService) { }
+  constructor(private messageService : MessageService) {}
 
   ngOnInit() {
   }

@@ -44,13 +44,17 @@ export class MessageService {
     this.readEvent.emit();
   }
 
+  getMessage(id : number) : Contact {
+    return this.contacts.find(x => x.id == id);
+  }
+
   getMessages() : Observable<Contact[]> {
 
     return this._http.get(environment.url, options)
       .pipe(
         map((res : Response) => {
           
-          let _contacts : Contact[] = [];
+          this.contacts = [];
           let json = res.json();
 
           json.forEach(data => {
@@ -64,11 +68,11 @@ export class MessageService {
             contact.user = data.user;
             contact.active = data.active;
 
-            _contacts.push(contact);
+            this.contacts.push(contact);
 
           });
 
-          return _contacts;
+          return this.contacts;
 
         })
       );
