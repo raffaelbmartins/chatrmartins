@@ -11,7 +11,7 @@ const options = new RequestOptions({
   url: environment.url,
   headers: new Headers({
     'Accept': 'application/json',
-    'X-sprofissional-Token' : environment.token
+    //'X-sprofissional-Token' : environment.token
   })
 });
 
@@ -23,13 +23,46 @@ export class MessageService {
   messages: Array<Message> = [];
   lastid: number;
   contacts: Contact[] = [];
+  private _contacts : BehaviorSubject<Contact[]>;
+  private dataStore : {
+    contacts: Contact[];
+  }
+  
+  contacts$ : Observable<Contact[]>;
 
   @Output() readEvent = new EventEmitter();
   @Output() scrollChange = new EventEmitter();
   @Output() openMessages : EventEmitter<Contact> = new EventEmitter();
   @Output() newMessage : EventEmitter<any> = new EventEmitter();
 
-  constructor(private _http: Http) { }
+  constructor(private _http: Http) {
+    this.dataStore = { contacts: [] };
+    this._contacts = <BehaviorSubject<Contact[]>>new BehaviorSubject([]);
+    this.contacts$ = this._contacts.asObservable();
+  }
+
+  get chats() {
+    return this._contacts.asObservable();
+  }
+
+  loadAll() : void {
+      this._http.get(environment.url, options)
+        .subscribe(data => {
+          this.dataStore.contacts = data.json();
+          this._contacts.next(Object.assign(Contact, this.dataStore).contacts);
+        }, error => console.log('Could not load contacts'));
+
+      // .pipe(
+      //   map((res) => {
+      //     let j = res.json();
+      //     let c = [];
+      //     j.forEach((el) => {
+      //       c.push(Object.assign(new Contact(), el));
+      //     });
+      //     return c;
+      //   })
+      // );
+  }
 
   sendMessage(_message) {
     let message = new Message(_message);

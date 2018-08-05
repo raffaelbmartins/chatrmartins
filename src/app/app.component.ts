@@ -12,31 +12,13 @@ import { Observable, Subscription } from '../../node_modules/rxjs';
 export class AppComponent {
   
   contacts : Contact[] = [];
-
-  private _subscription : Subscription;
   private _check;
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit() {
-    this.read();
-    this.check(); 
-  }
-
-  read() {
-    this.messageService.getMessages().subscribe((data : Array<Contact>) => {
-      
-      if (data.length > this.contacts.length) {
-        data.forEach((elem : Contact) => {
-          let find = this.contacts.some((y : Contact) => y.id == elem.id);
-          if (! find) {
-            this.contacts.push(elem);
-          }
-        });
-      }
-
-      // console.log("Read", this.contacts);
-    });
+    this.messageService.loadAll();
+    //this.check(); 
   }
 
   check() {

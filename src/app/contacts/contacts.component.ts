@@ -14,6 +14,7 @@ export class ContactsComponent implements OnInit {
   constructor(private messageService : MessageService) {}
 
   ngOnInit() {
+    this.messageService.chats.subscribe(data => this.contacts = data);
   }
 
   openBody(_contact : Contact) : void {
