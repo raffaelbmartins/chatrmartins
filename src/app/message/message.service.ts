@@ -22,15 +22,17 @@ export class MessageService {
 
   messages: Array<Message> = [];
   lastid: number;
+  contacts: Contact[] = [];
 
-  @Output() readEvent = new EventEmitter<Message[]>();
-  @Output() openMessages = new EventEmitter<Contact>();
+  @Output() readEvent = new EventEmitter();
+  @Output() openMessages : EventEmitter<Contact> = new EventEmitter();
 
   constructor(private _http: Http) { }
 
   sendMessage(_message) {
     let message = new Message(_message);
-    this.processMessage(message);
+    //this.processMessage(message);
+    console.log('Send Message',message);
   }
 
   processMessage(message: Message) {
@@ -39,7 +41,7 @@ export class MessageService {
 
   saveMessage(message: Message) {
     this.messages.push(message);
-    this.readEvent.emit(this.messages);
+    this.readEvent.emit();
   }
 
   getMessages() : Observable<Contact[]> {

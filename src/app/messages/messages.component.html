@@ -1,5 +1,5 @@
 <div class="card h-100" *ngIf="contact">
-    <app-message-header [contact]="contact"></app-message-header>
-    <app-message-body></app-message-body>
+    <app-message-header [title]="(contact.user == contact.output) ? contact.input : contact.output" [description]="contact.description"></app-message-header>
+    <app-message-body [contact]="contact"></app-message-body>
     <app-message-footer></app-message-footer>
 </div>

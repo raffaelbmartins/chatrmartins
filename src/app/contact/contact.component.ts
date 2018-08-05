@@ -10,15 +10,11 @@ import { MessageService } from '../message/message.service';
 export class ContactComponent implements OnInit {
 
   @Input() contact : Contact;
- 
+  avatar : string = 'assets/images/avatar_logo.png';
+  
   constructor(private messageService: MessageService) { }
 
   ngOnInit() {    
-  }
-
-  openMessages() {
-    this.messageService.openMessages.emit(this.contact);
-    console.log(this.contact);
   }
 
 }

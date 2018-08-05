@@ -8,7 +8,10 @@ import { Contact } from '../model/contact';
 })
 export class MessageHeaderComponent implements OnInit {
 
-  @Input() contact : Contact;
+  // @Input() contact : Contact;
+  @Input() title : string;
+  @Input() description : string;
+  @Input() avatar : string = 'assets/images/avatar_logo.png';
 
   constructor() {}
 

@@ -1,5 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Message } from '../model/message';
+import { Contact } from '../model/contact';
+import { MessageService } from '../message/message.service';
+import { Subscription } from '../../../node_modules/rxjs';
 
 @Component({
   selector: 'app-message-body',
@@ -8,29 +11,10 @@ import { Message } from '../model/message';
 })
 export class MessageBodyComponent implements OnInit {
 
-  messages: Array<Message> = [];
-  @Input() contact : {
-    id: number,
-    user: string,
-    input: string,
-    output: string,
-    description: string,
-    active: boolean,
-    avatar: string,
-    messages: Array<{
-      id: number,
-      content: string,
-      timesend: Date,
-      user_id: number,
-      user_username: string,
-      read: boolean
-    }>;
-  };
-  
+  @Input() contact : Contact;
+
   constructor() { }
 
   ngOnInit() {
-    
   }
-
 }
