@@ -51,17 +51,26 @@ export class MessageService {
           this.dataStore.contacts = data.json();
           this._contacts.next(Object.assign(Contact, this.dataStore).contacts);
         }, error => console.log('Could not load contacts'));
+  }
 
-      // .pipe(
-      //   map((res) => {
-      //     let j = res.json();
-      //     let c = [];
-      //     j.forEach((el) => {
-      //       c.push(Object.assign(new Contact(), el));
-      //     });
-      //     return c;
-      //   })
-      // );
+  load(id: number | string) {
+    this._http.get(environment.url, options).subscribe(data => {
+      let notFound = true;
+      let _data = data.json();
+
+      this.dataStore.contacts.forEach((item, index) => {
+        if (item.id === _data.id) {
+          this.dataStore.contacts[index] = _data;
+          notFound = false;
+        }
+      });
+
+      if (notFound) {
+        this.dataStore.contacts.push(_data);
+      }
+
+      this._contacts.next(Object.assign({}, this.dataStore).contacts);
+    }, error => console.log('Could not load todo.'));
   }
 
   sendMessage(_message) {

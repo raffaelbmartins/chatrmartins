@@ -18,9 +18,7 @@ export class ContactsComponent implements OnInit {
   }
 
   openBody(_contact : Contact) : void {
-    this.messageService.readEvent.emit();
     this.messageService.openMessages.emit(_contact);
-    this.messageService.scrollChange.emit();
   }
 
 }

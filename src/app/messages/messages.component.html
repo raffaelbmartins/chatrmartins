@@ -1,5 +1,9 @@
 <div id="teste" class="card h-100" *ngIf="contact">
     <app-message-header [title]="(contact.user == contact.output) ? contact.input : contact.output" [description]="contact.description"></app-message-header>
-    <app-message-body [contact]="contact" [scrollChange]="scrollChange"></app-message-body>
+    <div id="chat-body" class="card-body">
+        <ul #listMessage id="list-messages">
+          <app-message *ngFor="let message of contact.messages" [text]="message.content" [type]="(contact.user == message.user_username) ? 'out': 'in'"></app-message>
+        </ul>
+    </div>
     <app-message-footer></app-message-footer>
 </div>

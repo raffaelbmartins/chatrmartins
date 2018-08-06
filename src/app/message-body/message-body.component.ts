@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { Component, OnInit, Output, EventEmitter, Input, Inject } from '@angular/core';
 import { Message } from '../model/message';
 import { Contact } from '../model/contact';
@@ -18,9 +19,11 @@ export class MessageBodyComponent implements OnInit {
   constructor(private messageService: MessageService, @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit() {
+    
     this.messageService.scrollChange.subscribe(() => {
       this.scrollToBottom();
-    }); 
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -31,9 +34,16 @@ export class MessageBodyComponent implements OnInit {
     this.scrollToBottom();
   }
 
+  ngOnChange() {
+    this.scrollToBottom();
+  }
+  
   scrollToBottom() : void {
+    
     let h = this.document.querySelector('#chat-body');
     h.scrollTo(0,h.querySelector('ul').offsetHeight);
+    console.log('Scroll');
+    
   }
 
 }

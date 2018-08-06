@@ -1,10 +1,55 @@
 <div class="container align-content-center h-100">
   <div id="content" class="row">
     <div class="col-4 p-0">
-        <app-contacts></app-contacts>
+      <div id="chats">
+        <h1>Conversas</h1>
+        <div class="list-group">
+          <a *ngFor="let contact of contacts" href="#" class="list-group-item list-group-item-action" (click)="openBody(contact, messageBody)">
+            <div class="info">
+              <div class="avatar">
+                <img src="{{ avatar || 'assets/images/avatar_logo.png'}}" alt="">
+              </div>
+              <div class="text">
+                <h3>{{ (contact.user == contact.output) ? contact.input : contact.output }}</h3>
+                <p>{{ contact.description }}</p>
+              </div>
+              <div class="time">
+                <p>{{ time }}</p>
+                <span class="badge badge-primary badge-pill">{{ unread }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="col-8 p-0">
-        <app-messages></app-messages>
+        <div id="messages" class="card h-100">
+            <div class="card-header">
+                <div class="avatar">
+                  <img *ngIf="contact.id" src="{{ avatar || 'assets/images/avatar_logo.png'}}" alt="">
+                </div>
+                <div class="text">
+                  <h4 class="title">{{ (contact.user == contact.output) ? contact.input : contact.output }}</h4>
+                  <p>{{ contact.description }}</p>
+                </div>
+            </div>
+            <div #messageBody id="chat-body" class="card-body">
+                <ul #listMessage id="list-messages">
+                  <li *ngFor="let message of contact.messages" [ngClass]="{'message-in': contact.user == message.user_username, 'message-out': contact.user != message.user_username}" class="message">
+                      <p class="text">{{ message.content }}</p>
+                      <p class="time-send">{{ timeSend | date: 'dd/MM/yyyy hh:mm:ss' }}</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <div class="input-group mb-3">
+                    <textarea  id="message-area" class="form-control"></textarea>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button" id="button-send">Enviar</button>
+                    </div>
+                  </div>
+            </div>            
+        </div>
     </div>
   </div>
 </div>

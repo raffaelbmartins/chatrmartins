@@ -1,7 +1,9 @@
+import { map } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../message/message.service';
 import { Contact } from '../model/contact';
 import { Subscription, Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-messages',
@@ -20,10 +22,12 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit() {
     this._subscription = this.messageService.openMessages.subscribe((response : Contact) => {
-      this.contact = response;
-      console.log(response);
-      this.scrollChange.next();
-      this.check();  
+      
+      this.messageService.scrollChange.emit();
+      
+      this.messageService.chats.pipe(
+        map(contacts => contacts.find((item : Contact) => item.id === response.id))
+      ).subscribe((contact : Contact) => this.contact = contact);
     });
   }
 
