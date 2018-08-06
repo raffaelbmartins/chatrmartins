@@ -17,7 +17,9 @@ export class AppComponent {
   private contacts : Contact[];
   private contact : Contact;
   private _subContact : Subscription;
+  private _subRead : Subscription;
   private _scrollChage : Subject<any>;
+  private formMessage : string;
 
   constructor(private messageService: MessageService, private spinner: NgxSpinnerService) {
     this.contacts  = [];
@@ -38,6 +40,10 @@ export class AppComponent {
         () => this.spinner.hide()
       );
 
+    this._subRead = this.messageService.readEvent.subscribe(() => {
+      console.log("Read");
+    })
+
     this._scrollChage.subscribe(() => {
       let c = document.querySelector('#chat-body');
       c.scrollTop=c.scrollHeight;
@@ -54,5 +60,10 @@ export class AppComponent {
     setTimeout(() => {
         this._scrollChage.next();
     }, 3);
+  }
+
+  sendMessage() : void {
+    this.messageService.sendMessage(this.formMessage, this.contact.id);
+    this.formMessage = '';
   }
 }

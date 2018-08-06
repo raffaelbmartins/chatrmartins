@@ -68,6 +68,23 @@ export class MessageService {
 
   }
 
+  sendMessage(message : string, id : number) {
+    
+    let _chat = this.dataStore.contacts.find((e) => e.id === id);
+    
+    if (_chat) {
+      
+      return this._http.post(environment.url, {chat: id, mensagem: message}, options)
+        .subscribe(resp => {
+          _chat.messages.push(resp);
+        },error => Observable.throw("Coul not save message")),
+        () => this.readEvent.emit();
+
+    } else {
+      return Observable.throw("Coul not sava message");
+    }
+  }
+
   // getMessages() : Observable<Contact[]> {
 
   //   return this._http.get(environment.url, options)
