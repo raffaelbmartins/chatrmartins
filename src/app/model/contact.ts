@@ -7,8 +7,12 @@ export class Contact {
     public input: string;
     public output: string;
     public description: string;
-    public messages: Array<Object> = [];
+    public messages: any = [];
     public user: string;
     public active: boolean;
+
+    constructor(data: Contact|Object) {
+        Object.assign(this, data);
+    }
 
 }

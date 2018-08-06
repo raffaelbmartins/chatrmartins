@@ -37,55 +37,19 @@ export class MessageService {
 
   constructor(private _http: Http) {
     this.dataStore = { contacts: [] };
-    this._contacts = <BehaviorSubject<Contact[]>>new BehaviorSubject([]);
-    this.contacts$ = this._contacts.asObservable();
   }
 
-  get chats() {
-    return this._contacts.asObservable();
-  }
-
-  loadAll() : void {
-      this._http.get(environment.url, options)
-        .subscribe(data => {
-          this.dataStore.contacts = data.json();
-          this._contacts.next(Object.assign(Contact, this.dataStore).contacts);
-        }, error => console.log('Could not load contacts'));
-  }
-
-  load(id: number | string) {
-    this._http.get(environment.url, options).subscribe(data => {
-      let notFound = true;
-      let _data = data.json();
-
-      this.dataStore.contacts.forEach((item, index) => {
-        if (item.id === _data.id) {
-          this.dataStore.contacts[index] = _data;
-          notFound = false;
-        }
-      });
-
-      if (notFound) {
-        this.dataStore.contacts.push(_data);
-      }
-
-      this._contacts.next(Object.assign({}, this.dataStore).contacts);
-    }, error => console.log('Could not load todo.'));
-  }
-
-  sendMessage(_message) {
-    let message = new Message(_message);
-    //this.processMessage(message);
-    console.log('Send Message',message);
-  }
-
-  processMessage(message: Message) {
-    this.saveMessage(message);
-  }
-
-  saveMessage(message: Message) {
-    this.messages.push(message);
-    this.readEvent.emit();
+  loadChats() : Observable<Contact[]> {
+    return this._http.get(environment.url, options)
+      .pipe(
+        map((data) => {
+          let j = data.json();
+          j.forEach(element => {
+            this.dataStore.contacts.push(new Contact(element));
+          });
+          return this.dataStore.contacts;
+        })
+      );
   }
 
   getMessage(contact : Contact) : Array<any> {
@@ -104,35 +68,35 @@ export class MessageService {
 
   }
 
-  getMessages() : Observable<Contact[]> {
+  // getMessages() : Observable<Contact[]> {
 
-    return this._http.get(environment.url, options)
-      .pipe(
-        map((res : Response) => {
+  //   return this._http.get(environment.url, options)
+  //     .pipe(
+  //       map((res : Response) => {
           
-          this.contacts = [];
-          let json = res.json();
+  //         this.contacts = [];
+  //         let json = res.json();
 
-          json.forEach(data => {
+  //         json.forEach(data => {
             
-            let contact = new Contact();
-            contact.id = data.id;
-            contact.input = data.input;
-            contact.output = data.output;
-            contact.description = data.description;
-            contact.messages = data.messages;
-            contact.user = data.user;
-            contact.active = data.active;
+  //           let contact = new Contact();
+  //           contact.id = data.id;
+  //           contact.input = data.input;
+  //           contact.output = data.output;
+  //           contact.description = data.description;
+  //           contact.messages = data.messages;
+  //           contact.user = data.user;
+  //           contact.active = data.active;
 
-            this.contacts.push(contact);
+  //           this.contacts.push(contact);
 
-          });
+  //         });
 
-          return this.contacts;
+  //         return this.contacts;
 
-        })
-      );
-  }
+  //       })
+  //     );
+  // }
 
   private handleError(error: Response) {
     console.log(error.json());

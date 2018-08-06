@@ -1,3 +1,9 @@
+<ngx-spinner
+  bdColor = "rgba(51, 51, 51, 0.8)"
+  size = "large"
+  color = "#fff"
+  type = "line-scale"
+></ngx-spinner>
 <div class="container align-content-center h-100">
   <div id="content" class="row">
     <div class="col-4 p-0">
@@ -37,7 +43,7 @@
                 <ul #listMessage id="list-messages">
                   <li *ngFor="let message of contact.messages" [ngClass]="{'message-in': contact.user == message.user_username, 'message-out': contact.user != message.user_username}" class="message">
                       <p class="text">{{ message.content }}</p>
-                      <p class="time-send">{{ timeSend | date: 'dd/MM/yyyy hh:mm:ss' }}</p>
+                      <p class="time-send"></p>
                     </li>
                 </ul>
             </div>
