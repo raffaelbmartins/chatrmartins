@@ -5,24 +5,10 @@ import { HttpModule } from '@angular/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { AppComponent } from './app.component';
-import { ContactsComponent } from './contacts/contacts.component';
-import { ContactComponent } from './contact/contact.component';
-import { MessagesComponent } from './messages/messages.component';
-import { MessageComponent } from './message/message.component';
-import { MessageHeaderComponent } from './message-header/message-header.component';
-import { MessageBodyComponent } from './message-body/message-body.component';
-import { MessageFooterComponent } from './message-footer/message-footer.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ContactsComponent,
-    ContactComponent,
-    MessagesComponent,
-    MessageComponent,
-    MessageHeaderComponent,
-    MessageBodyComponent,
-    MessageFooterComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,

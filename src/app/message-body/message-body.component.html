@@ -1,5 +1,0 @@
-<div id="chat-body" class="card-body">
-  <ul #listMessage id="list-messages">
-    <app-message *ngFor="let message of contact.messages" [text]="message.content" [type]="(contact.user == message.user_username) ? 'out': 'in'"></app-message>
-  </ul>
-</div>
