@@ -4,6 +4,7 @@ import { MessageService } from './message/message.service';
 import { Contact } from './model/contact';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { interval } from 'rxjs/internal/observable/interval';
 
 @Component({
   selector: 'app-root',
@@ -64,14 +65,16 @@ export class AppComponent {
 
   openBody(_contact : Contact, el) {
     
-    this.contact = this.messageService.loadChat(_contact);
+    this.messageService.loadChat(_contact)
+      .subscribe((c) => this.contact = c);
 
-    let getContact = setInterval(() => {
-      this.contact = this.messageService.loadChat(_contact);
-      setTimeout(() => {
-        this._scrollChage.next();
-      }, 3);
-    }, 1500);
+      let getContact = setInterval(() => {
+        let messages = this.messageService.getMessages(this.contact);
+        console.log(messages);
+        if (messages.length > this.contact.messages.length) {
+          this.contact.messages = messages;
+        }
+      }, 3000);
 
     setTimeout(() => {
         this._scrollChage.next();

@@ -11,7 +11,7 @@ const optionsGet = new RequestOptions({
   url: environment.urlGet,
   headers: new Headers({
     'Accept': 'application/json',
-    //'X-sprofissional-Token' : environment.token
+    'X-sprofissional-Token' : environment.token
   })
 });
 
@@ -20,8 +20,8 @@ const optionsSave = new RequestOptions({
   url: environment.urlSave,
   headers: new Headers({
     'Accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded'
-    //'X-sprofissional-Token' : environment.token
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'X-sprofissional-Token' : environment.token
   })
 });
 
@@ -33,7 +33,9 @@ export class MessageService {
   messages: Array<Message> = [];
   lastid: number;
   contacts: Contact[] = [];
-  private _contacts : BehaviorSubject<Contact[]>;
+  contact: Observable<Contact>;
+  private _contact : BehaviorSubject<Contact>;
+  _contact$ : Observable<Contact>;
   private dataStore : {
     contacts: Contact[];
   }
@@ -47,6 +49,8 @@ export class MessageService {
 
   constructor(private _http: Http) {
     this.dataStore = { contacts: [] };
+    this._contact = new BehaviorSubject<Contact>(new Contact({}));
+    this._contact$ = this._contact.asObservable();
   }
 
   loadChats() : Observable<Contact[]> {
@@ -63,23 +67,36 @@ export class MessageService {
       );
   }
 
-  loadChat(_contact : Contact) : Contact {
-    return this.dataStore.contacts.find(x => x.id === _contact.id);
+  loadChat(_contact : Contact) : Observable<Contact> {
+    this._contact.next((this.dataStore.contacts.find(x => x.id === _contact.id)));
+    return this._contact$;
+  }
+
+  getMessages(_contact : Contact) {
+    let c = this.dataStore.contacts.find(x => x.id === _contact.id);
+    return c.messages;
   }
 
   getMessage(contact : Contact) : Array<any> {
     
-    let _contact = this.contacts.find(x => x.id == contact.id);
+    let _contact = this.dataStore.contacts.find(x => x.id == contact.id);
     let _newMessages = [];
-
+    
+    if (_contact) {
+      
       _contact.messages.forEach((x : any) => {
         let find = contact.messages.some((y: any) => y.id === x.id );
         if (! find) {
           _newMessages.push(x);
         }
       });
+    }
 
+    this.contact
+    
     return _newMessages;
+
+    
 
   }
 
