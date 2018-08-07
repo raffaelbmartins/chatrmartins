@@ -6,11 +6,21 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Contact } from '../model/contact';
 
-const options = new RequestOptions({
+const optionsGet = new RequestOptions({
   method: RequestMethod.Get,
-  url: environment.url,
+  url: environment.urlGet,
   headers: new Headers({
     'Accept': 'application/json',
+    //'X-sprofissional-Token' : environment.token
+  })
+});
+
+const optionsSave = new RequestOptions({
+  method: RequestMethod.Post,
+  url: environment.urlSave,
+  headers: new Headers({
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded'
     //'X-sprofissional-Token' : environment.token
   })
 });
@@ -40,16 +50,21 @@ export class MessageService {
   }
 
   loadChats() : Observable<Contact[]> {
-    return this._http.get(environment.url, options)
+    return this._http.get(environment.urlGet, optionsGet)
       .pipe(
         map((data) => {
           let j = data.json();
+          this.dataStore.contacts = [];
           j.forEach(element => {
             this.dataStore.contacts.push(new Contact(element));
           });
           return this.dataStore.contacts;
         })
       );
+  }
+
+  loadChat(_contact : Contact) : Contact {
+    return this.dataStore.contacts.find(x => x.id === _contact.id);
   }
 
   getMessage(contact : Contact) : Array<any> {
@@ -74,9 +89,14 @@ export class MessageService {
     
     if (_chat) {
       
-      return this._http.post(environment.url, {chat: id, mensagem: message}, options)
+      let _body = new URLSearchParams();
+      _body.set('chat', _chat.id.toString());
+      _body.set('mensagem', message);
+      
+      return this._http.post(environment.urlSave, _body.toString(), optionsSave)
         .subscribe(resp => {
-          _chat.messages.push(resp);
+          _chat.messages.push(resp.json());
+          this.readEvent.emit();
         },error => Observable.throw("Coul not save message")),
         () => this.readEvent.emit();
 

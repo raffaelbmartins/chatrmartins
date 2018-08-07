@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   token: "T*=/:4Z7,e8hF3vgxqS$]rVrf4:]uL:aGt;*Dk!w'RJ>&NXAJ,^}F5RIfpbR[YF",
-  url: 'http://seuprofissional.local/chat/mensagens',
+  urlGet: 'http://seuprofissional.local/chat/mensagens',
+  urlSave: 'http://seuprofissional.local/chat/conversas/salvar',
+  save: '/chat/conversas/salvar',
   origin: 'http://localhost:4200'
 };
 

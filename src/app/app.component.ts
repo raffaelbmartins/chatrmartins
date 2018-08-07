@@ -31,17 +31,14 @@ export class AppComponent {
 
     this.spinner.show();
 
-    this._subContact = this.messageService.loadChats()
-      .subscribe(
-        (contacts : Contact[]) => {
-          this.contacts = contacts;
-        }, 
-        error => {},
-        () => this.spinner.hide()
-      );
+    let checkContacts = setInterval(() => {
+      this.loadContacts();
+    }, 5000);
 
     this._subRead = this.messageService.readEvent.subscribe(() => {
-      console.log("Read");
+      setTimeout(() => {
+        this._scrollChage.next();
+      }, 3);
     })
 
     this._scrollChage.subscribe(() => {
@@ -50,13 +47,34 @@ export class AppComponent {
     });
   }
 
+  loadContacts() {
+    this._subContact = this.messageService.loadChats()
+      .subscribe(
+        (contacts : Contact[]) => {
+          this.contacts = contacts;
+        }, 
+        error => this.spinner.hide(),
+        () => this.spinner.hide()
+      );
+  }
+
   ngOnDestroy() : void {
     this._subContact.unsubscribe();
     this._scrollChage.unsubscribe();
+    this._subRead.unsubscribe();
   }
 
   openBody(_contact : Contact, el) {
-    this.contact = _contact;
+    
+    this.contact = this.messageService.loadChat(_contact);
+
+    let getContact = setInterval(() => {
+      this.contact = this.messageService.loadChat(_contact);
+      setTimeout(() => {
+        this._scrollChage.next();
+      }, 3);
+    }, 1500);
+
     setTimeout(() => {
         this._scrollChage.next();
     }, 3);

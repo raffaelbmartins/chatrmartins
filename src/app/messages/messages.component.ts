@@ -21,14 +21,14 @@ export class MessagesComponent implements OnInit {
   constructor(private messageService: MessageService) { }
 
   ngOnInit() {
-    this._subscription = this.messageService.openMessages.subscribe((response : Contact) => {
+    // this._subscription = this.messageService.openMessages.subscribe((response : Contact) => {
       
-      this.messageService.scrollChange.emit();
+    //   this.messageService.scrollChange.emit();
       
-      this.messageService.chats.pipe(
-        map(contacts => contacts.find((item : Contact) => item.id === response.id))
-      ).subscribe((contact : Contact) => this.contact = contact);
-    });
+    //   this.messageService.chats.pipe(
+    //     map(contacts => contacts.find((item : Contact) => item.id === response.id))
+    //   ).subscribe((contact : Contact) => this.contact = contact);
+    // });
   }
 
   read(_messages: Array<Object>) {

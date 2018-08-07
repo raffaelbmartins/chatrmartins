@@ -17,7 +17,7 @@ export class MessageFooterComponent implements OnInit {
   }
 
   sendMessage() {
-    this.messageService.sendMessage(this.message);
+    // this.messageService.sendMessage(this.message);
     this.message = null;
   }
 
