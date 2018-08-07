@@ -70,11 +70,14 @@ export class AppComponent {
 
       let getContact = setInterval(() => {
         let messages = this.messageService.getMessages(this.contact);
-        console.log(messages);
+        
         if (messages.length > this.contact.messages.length) {
           this.contact.messages = messages;
+          setTimeout(() => {
+            this._scrollChage.next();
+          }, 3);
         }
-      }, 3000);
+      }, 1500);
 
     setTimeout(() => {
         this._scrollChage.next();
