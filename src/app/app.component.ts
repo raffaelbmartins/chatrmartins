@@ -19,11 +19,13 @@ export class AppComponent {
   private _subRead : Subscription;
   private _scrollChage : Subject<any>;
   formMessage : string;
+  unread : string;
 
   constructor(private messageService: MessageService, private spinner: NgxSpinnerService) {
     this.contacts  = [];
     this.contact = new Contact({});
     this._scrollChage = new Subject;
+    this.unread = '';
   }
 
   ngOnInit() {
@@ -65,6 +67,8 @@ export class AppComponent {
 
   openBody(_contact : Contact, el) {
     
+    this.unread = '';
+
     this.messageService.loadChat(_contact)
       .subscribe((c) => this.contact = c);
 
@@ -73,6 +77,7 @@ export class AppComponent {
         
         if (messages.length > this.contact.messages.length) {
           this.contact.messages = messages;
+          this.unread = '!';
           setTimeout(() => {
             this._scrollChage.next();
           }, 3);
