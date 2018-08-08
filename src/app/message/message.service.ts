@@ -5,6 +5,7 @@ import { Observable, Subject, BehaviorSubject } from "rxjs";
 import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Contact } from '../model/contact';
+import { retry } from 'rxjs/internal/operators/retry';
 
 const optionsGet = new RequestOptions({
   method: RequestMethod.Get,
@@ -56,6 +57,7 @@ export class MessageService {
   loadChats() : Observable<Contact[]> {
     return this._http.get(environment.urlGet, optionsGet)
       .pipe(
+        retry(5),
         map((data) => {
           let j = data.json();
           this.dataStore.contacts = [];
@@ -111,6 +113,9 @@ export class MessageService {
       _body.set('mensagem', message);
       
       return this._http.post(environment.urlSave, _body.toString(), optionsSave)
+        .pipe(
+          retry(5)
+        )
         .subscribe(resp => {
           _chat.messages.push(resp.json());
           this.readEvent.emit();
