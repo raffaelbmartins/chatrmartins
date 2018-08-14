@@ -10,7 +10,7 @@ export class Contact {
     public messages: any = [];
     public user: string;
     public active: boolean;
-    public unread: boolean;
+    public unread: number;
 
     constructor(data: Contact|Object) {
         Object.assign(this, data);

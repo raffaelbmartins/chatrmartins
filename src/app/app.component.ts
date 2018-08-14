@@ -2,7 +2,7 @@ import { map } from 'rxjs/operators';
 import { Component } from '@angular/core';
 import { MessageService } from './message/message.service';
 import { Contact } from './model/contact';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subscription, Subject, timer } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
@@ -18,6 +18,14 @@ export class AppComponent {
   private _subRead : Subscription;
   private _scrollChage : Subject<any>;
   formMessage : string;
+  private timerSubscription : Subscription;
+  private contactSubscription : Subscription;
+  unread : {
+    id: number,
+    read: boolean;
+  }
+
+  send: boolean = false;
 
   constructor(private messageService: MessageService, private spinner: NgxSpinnerService) {
     this.contacts  = [];
@@ -26,57 +34,104 @@ export class AppComponent {
   }
 
   ngOnInit() {
-
     this.spinner.show();
-    this.loadContacts();
-    
-    this._subRead = this.messageService.readEvent.subscribe(() => {
-      setTimeout(() => {
-        this._scrollChage.next();
-      }, 3);
-    })
-
-    this._scrollChage.subscribe(() => {
-      let c = document.querySelector('#chat-body');
-      c.scrollTop=c.scrollHeight;
-    });
+    this.refreshData();
+  }
+  
+  ngOnDestroy(): void {
+    if (this.contactSubscription) {
+        this.contactSubscription.unsubscribe();
+    }
+    if (this.timerSubscription) {
+        this.timerSubscription.unsubscribe();
+    }
   }
 
-  loadContacts() {
-    this._subContact = this.messageService.loadChats()
+  private subscribeToData(): void {
+    this.timerSubscription = timer(5000).subscribe(() => this.refreshData());
+  }
+
+  private refreshData(): void {
+    this.contactSubscription = this.messageService.getAllContacts()
       .subscribe(
-        (contacts : Contact[]) => {
-          this.contacts = contacts;
-        }, 
-        error => this.spinner.hide(),
-        () => this.spinner.hide()
-      );
-  }
+        (data:Contact[]) => {
+          
+          this.contacts = data;
 
-  ngOnDestroy() : void {
-    this._subContact.unsubscribe();
-    this._scrollChage.unsubscribe();
-    this._subRead.unsubscribe();
+          if (this.contact && this.contact.id) {
+            let _c = this.contacts.find(x=>x.id===this.contact.id);
+          }
+          this.subscribeToData();
+        },
+        error => {
+          this.spinner.hide();
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
   }
 
   openBody(_contact : Contact, el) {
     
-    this.contact = this.messageService.loadChat(_contact);
+    let find = this.contacts.find(x=>x.id === _contact.id);
 
-    // let getContact = setInterval(() => {
-    //   this.contact = this.messageService.loadChat(_contact);
-    //   setTimeout(() => {
-    //     this._scrollChage.next();
-    //   }, 3);
-    // }, 1500);
+    if (find) {
+      this.contact = find;
+    }
 
-    setTimeout(() => {
-        this._scrollChage.next();
+    setTimeout(function() {
+      let c = document.querySelector('#chat-body');
+      c.scrollTop = c.scrollHeight;
     }, 3);
   }
 
-  sendMessage() : void {
-    this.messageService.sendMessage(this.formMessage, this.contact.id);
+  sendMessage() {
+    this.send = true;
+    this.messageService.sendMessage(this.formMessage, this.contact.id)
+      .subscribe(resp => {
+      this.contact.messages.push(resp.json());
+      },error => {},
+      () => {
+        this.send = false;
+        setTimeout(function() {
+          let c = document.querySelector('#chat-body');
+          c.scrollTop = c.scrollHeight;
+        }, 3);
+      }
+    );
     this.formMessage = '';
   }
+
+  // loadContacts() {
+  //   this._subContact = this.messageService.loadChats()
+  //     .subscribe(
+  //       (contacts : Contact[]) => {
+  //         this.contacts = contacts;
+  //       }, 
+  //       error => this.spinner.hide(),
+  //       () => this.spinner.hide()
+  //     );
+  // }
+
+  // openBody(_contact : Contact, el) {
+    
+  //   this.contact = this.messageService.loadChat(_contact);
+
+  //   // let getContact = setInterval(() => {
+  //   //   this.contact = this.messageService.loadChat(_contact);
+  //   //   setTimeout(() => {
+  //   //     this._scrollChage.next();
+  //   //   }, 3);
+  //   // }, 1500);
+
+  //   setTimeout(() => {
+  //       this._scrollChage.next();
+  //   }, 3);
+  // }
+
+  // sendMessage() : void {
+  //   this.messageService.sendMessage(this.formMessage, this.contact.id);
+  //   this.formMessage = '';
+  // }
 }
