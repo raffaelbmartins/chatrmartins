@@ -11,7 +11,7 @@ const optionsGet = new RequestOptions({
   url: environment.urlGet,
   headers: new Headers({
     'Accept': 'application/json',
-    //'X-sprofissional-Token' : environment.token
+    'X-sprofissional-Token' : environment.token
   })
 });
 
@@ -20,8 +20,8 @@ const optionsSave = new RequestOptions({
   url: environment.urlSave,
   headers: new Headers({
     'Accept': 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded'
-    //'X-sprofissional-Token' : environment.token
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'X-sprofissional-Token' : environment.token
   })
 });
 
@@ -58,6 +58,7 @@ export class MessageService {
           j.forEach(element => {
             this.dataStore.contacts.push(new Contact(element));
           });
+          console.log(this.dataStore.contacts);
           return this.dataStore.contacts;
         })
       );

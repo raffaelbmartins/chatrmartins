@@ -28,11 +28,8 @@ export class AppComponent {
   ngOnInit() {
 
     this.spinner.show();
-
-    let checkContacts = setInterval(() => {
-      this.loadContacts();
-    }, 5000);
-
+    this.loadContacts();
+    
     this._subRead = this.messageService.readEvent.subscribe(() => {
       setTimeout(() => {
         this._scrollChage.next();
@@ -66,12 +63,12 @@ export class AppComponent {
     
     this.contact = this.messageService.loadChat(_contact);
 
-    let getContact = setInterval(() => {
-      this.contact = this.messageService.loadChat(_contact);
-      setTimeout(() => {
-        this._scrollChage.next();
-      }, 3);
-    }, 1500);
+    // let getContact = setInterval(() => {
+    //   this.contact = this.messageService.loadChat(_contact);
+    //   setTimeout(() => {
+    //     this._scrollChage.next();
+    //   }, 3);
+    // }, 1500);
 
     setTimeout(() => {
         this._scrollChage.next();
