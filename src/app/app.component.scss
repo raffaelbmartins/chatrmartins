@@ -116,7 +116,7 @@
 
         display: flex;
         align-content: center;
-        height: 80px;
+        height: 12%;
     
         .avatar {
             
@@ -199,6 +199,10 @@
     
         }
     
+    }
+    
+    .card-footer {
+        height: 12%;
     }
 
     #message-area {

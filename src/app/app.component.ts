@@ -2,9 +2,8 @@ import { map } from 'rxjs/operators';
 import { Component } from '@angular/core';
 import { MessageService } from './message/message.service';
 import { Contact } from './model/contact';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subscription, Subject, timer } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { interval } from 'rxjs/internal/observable/interval';
 
 @Component({
   selector: 'app-root',
@@ -19,78 +18,88 @@ export class AppComponent {
   private _subRead : Subscription;
   private _scrollChage : Subject<any>;
   formMessage : string;
-  unread : string;
+  private timerSubscription : Subscription;
+  private contactSubscription : Subscription;
+  unread : {
+    id: number,
+    read: boolean;
+  }
+
+  send: boolean = false;
 
   constructor(private messageService: MessageService, private spinner: NgxSpinnerService) {
     this.contacts  = [];
     this.contact = new Contact({});
     this._scrollChage = new Subject;
-    this.unread = '';
   }
 
   ngOnInit() {
-
     this.spinner.show();
-
-    let checkContacts = setInterval(() => {
-      this.loadContacts();
-    }, 5000);
-
-    this._subRead = this.messageService.readEvent.subscribe(() => {
-      setTimeout(() => {
-        this._scrollChage.next();
-      }, 3);
-    })
-
-    this._scrollChage.subscribe(() => {
-      let c = document.querySelector('#chat-body');
-      c.scrollTop=c.scrollHeight;
-    });
+    this.refreshData();
+  }
+  
+  ngOnDestroy(): void {
+    if (this.contactSubscription) {
+        this.contactSubscription.unsubscribe();
+    }
+    if (this.timerSubscription) {
+        this.timerSubscription.unsubscribe();
+    }
   }
 
-  loadContacts() {
-    this._subContact = this.messageService.loadChats()
+  private subscribeToData(): void {
+    this.timerSubscription = timer(5000).subscribe(() => this.refreshData());
+  }
+
+  private refreshData(): void {
+    this.contactSubscription = this.messageService.getAllContacts()
       .subscribe(
-        (contacts : Contact[]) => {
-          this.contacts = contacts;
-        }, 
-        error => this.spinner.hide(),
-        () => this.spinner.hide()
-      );
-  }
+        (data:Contact[]) => {
+          
+          this.contacts = data;
 
-  ngOnDestroy() : void {
-    this._subContact.unsubscribe();
-    this._scrollChage.unsubscribe();
-    this._subRead.unsubscribe();
+          if (this.contact && this.contact.id) {
+            let _c = this.contacts.find(x=>x.id===this.contact.id);
+          }
+          this.subscribeToData();
+        },
+        error => {
+          this.spinner.hide();
+        },
+        () => {
+          this.spinner.hide();
+        }
+      );
   }
 
   openBody(_contact : Contact, el) {
     
-    this.unread = '';
+    let find = this.contacts.find(x=>x.id === _contact.id);
 
-    this.messageService.loadChat(_contact)
-      .subscribe((c) => this.contact = c);
+    if (find) {
+      this.contact = find;
+    }
 
-      let getContact = setInterval(() => {
-        let messages = this.messageService.getMessages(this.contact);
-        
-        if (messages.length > this.contact.messages.length) {
-          this.contact.messages = messages;
-          this.unread = '!';
-          setTimeout(() => {
-            this._scrollChage.next();
-          }, 3);
-        }
-      }, 1500);
-
-    setTimeout(() => {
-        this._scrollChage.next();
+    setTimeout(function() {
+      let c = document.querySelector('#chat-body');
+      c.scrollTop = c.scrollHeight;
     }, 3);
   }
 
-  sendMessage() : void {
-    this.messageService.sendMessage(this.formMessage, this.contact.id);
+  sendMessage() {
+    this.send = true;
+    this.messageService.sendMessage(this.formMessage, this.contact.id)
+      .subscribe(resp => {
+      this.contact.messages.push(resp.json());
+      },error => {},
+      () => {
+        this.send = false;
+        setTimeout(function() {
+          let c = document.querySelector('#chat-body');
+          c.scrollTop = c.scrollHeight;
+        }, 3);
+      }
+    );
     this.formMessage = '';
   }
 }

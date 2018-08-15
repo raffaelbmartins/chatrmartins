@@ -21,7 +21,7 @@
               </div>
               <div class="time">
                 <p>{{ time }}</p>
-                <span class="badge badge-primary badge-pill">{{ unread }}</span>
+                <span class="badge badge-primary badge-pill">{{ contact.unread }}</span>
               </div>
             </div>
           </a>
@@ -43,7 +43,7 @@
                 <ul #listMessage id="list-messages">
                   <li *ngFor="let message of contact.messages" [ngClass]="(contact.user == message.user_username) ? 'message-out' : 'message-in'" class="message">
                       <p class="text">{{ message.content }}</p>
-                      <p class="time-send"></p>
+                      <p class="time-send">{{ message.timesend.date | date: 'dd/MM/y hh:mm'}}</p>
                     </li>
                 </ul>
             </div>
@@ -51,7 +51,10 @@
                 <div class="input-group mb-3">
                     <textarea [(ngModel)]="formMessage" id="message-area" class="form-control"></textarea>
                     <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button" id="button-send" (click)="sendMessage()">Enviar</button>
+                        <button *ngIf="send; else btnSend" class="btn btn-outline-secondary btn-disabled" type="button" id="button-send">Enviando...</button>
+                        <ng-template #btnSend>
+                            <button class="btn btn-outline-secondary" type="button" id="button-send" (click)="sendMessage()">Enviar</button>
+                        </ng-template>
                     </div>
                   </div>
             </div>            
