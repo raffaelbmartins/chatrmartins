@@ -36,7 +36,7 @@ export class MessageService {
     return this._http.get(environment.urlGet, optionsGet)
       .pipe(
         retry(3),
-        map((res: Response) => res.json())
+        map((res: Response) => res.json() || [])
       );
   }
 
