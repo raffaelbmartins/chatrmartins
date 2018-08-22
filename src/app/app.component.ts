@@ -51,6 +51,19 @@ export class AppComponent {
     this.timerSubscription = timer(5000).subscribe(() => this.refreshData());
   }
 
+  private refreshMessages() : void {
+    let find = this.contacts.find(x=>x.id === this.contact.id);
+    if (find) {
+      if (find.messages.length > this.contact.messages.length) {
+        this.contact = find;
+        setTimeout(function() {
+          let c = document.querySelector('#chat-body');
+          c.scrollTop = c.scrollHeight;
+        }, 3);
+      }
+    }
+  }
+
   private refreshData(): void {
     this.contactSubscription = this.messageService.getAllContacts()
       .subscribe(
@@ -59,8 +72,9 @@ export class AppComponent {
           this.contacts = data;
 
           if (this.contact && this.contact.id) {
-            let _c = this.contacts.find(x=>x.id===this.contact.id);
+            this.refreshMessages();
           }
+
           this.subscribeToData();
         },
         error => {
